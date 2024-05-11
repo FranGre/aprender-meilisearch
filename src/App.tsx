@@ -251,8 +251,9 @@ function App() {
             language='bash'
             showLineNumbers={false}
             theme={atomOneDark}
-            text={`php artisan make:livewwire SearchQuestions`} />
+            text={`php artisan make:livewire SearchQuestions`} />
 
+          <H3 text='Implementar el componente' />
           <P>Implemento mi componente creado en la vista que lo necesite.</P>
           <CopyBlock
             customStyle={{
@@ -333,7 +334,7 @@ function App() {
 
 `} />
 
-          <P>Ahora dirígete a localhost:7700 y prueba</P>
+          <P>Ahora dirígete a donde has implementado el componente y a funcionar !!</P>
         </div>
 
       </Article>
