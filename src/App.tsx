@@ -11,8 +11,8 @@ import P from './components/P'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
 import Tree from './interfaces/Tree'
 import Image from './components/Image'
-import searchExample from '../public/search_example.gif'
-import web from '../public/web.png'
+import searchExample from '/search_example.gif'
+import web from '/web.png'
 
 const pathDatabaseSeeder: Tree = {
   name: "",
