@@ -36,14 +36,14 @@ export default function DirectoryTreeView({ folder }) {
   )
 }
 
-const FolderIcon = ({ isOpen }) =>
+const FolderIcon = ({ isOpen }: { isOpen: boolean }) =>
   isOpen ? (
     <FaRegFolderOpen color="e8a87c" className="icon" />
   ) : (
     <FaRegFolder color="e8a87c" className="icon" />
   )
 
-const FileIcon = ({ filename }) => {
+const FileIcon = ({ filename }: { filename: string }) => {
   const extension = filename.slice(filename.lastIndexOf(".") + 1)
   switch (extension) {
     case "php":
