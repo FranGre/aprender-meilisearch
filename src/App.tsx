@@ -412,6 +412,17 @@ class SearchUsers extends Component
 
           </div>
         </div>
+
+        <div className='pb-12'>
+          <H2 text='Arranca el proyecto' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`php artisan serve`} />
+        </div>
         <P>a funcionar :)</P>
       </Article>
       <Footer />
