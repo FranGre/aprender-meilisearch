@@ -15,14 +15,12 @@ const pathDatabaseSeeder: Tree = {
   name: "",
   children: [
     {
-      name: "app",
+      name: "database",
       children: [
         {
-          name: "database", children: [
+          name: "seeders", children: [
             {
-              name: "seeders", children: [
-                { name: "DatabaseSeeder.php" }
-              ]
+              name: "DatabaseSeeder.php"
             }
           ]
         }
@@ -123,7 +121,7 @@ DB_PASSWORD=root@2410`} />
         <div className='pb-12'>
           <H2 text='Ejecutar seeders' />
           <P>En mi caso, modifiqué el seeder para poder generar 100 users aletorios</P>
-          <P>app/database/seeders/DatabaseSeeder.php</P>
+          <P>database/seeders/DatabaseSeeder.php</P>
           <DirectoryTreeView folder={pathDatabaseSeeder} />
 
           <P>Ejecuto el seeder</P>
