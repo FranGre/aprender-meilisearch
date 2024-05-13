@@ -1,343 +1,421 @@
 import './App.css'
 import Article from './components/Article'
+import DirectoryTreeView from './components/DirectoryTreeView'
 import Callout from './components/Callout'
+import Footer from './components/Footer'
 import H1 from './components/H1'
 import H2 from './components/H2'
 import H3 from './components/H3'
+import Link from './components/Link'
 import P from './components/P'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
+
+const pathDatabaseSeeder = {
+  name: "",
+  children: [
+    {
+      name: "app",
+      children: [
+        {
+          name: "database", children: [
+            {
+              name: "sedeers", children: [
+                { name: "DatabaseSeeder.php" }
+              ]
+            }
+          ]
+        }
+      ],
+    },
+  ],
+}
+
+const pathLivewireComponentClass = {
+  name: "",
+  children: [
+    {
+      name: "app",
+      children: [
+        {
+          name: "Livewire",
+          children: [
+            {
+              name: "SearchUsers.php",
+            }
+          ]
+        }
+      ],
+    },
+  ],
+}
+
+const pathLivewireComponentView = {
+  name: "",
+  children: [
+    {
+      name: "resources",
+      children: [
+        {
+          name: "views",
+          children: [
+            {
+              name: "livewire",
+              children: [
+                {
+                  name: "search-users.blade.php"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+    },
+  ],
+}
 
 function App() {
 
   return (
     <>
-      <H1 text='Aprender Meilisearch + Livewire' />
-
+      <H1 text='Como usar meilisearch junto con livewire' />
       <Article>
         <div className='pb-12'>
-          <P>Básicamente nos permite poder realizar filtrados.</P>
-          <img src="search_example.gif" alt="milesearch + livewire example" className="max-w-screen-sm rounded-lg shadow-2xl" />
+          <H2 text='Crear el proyecto' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text='laravel new recetas' />
         </div>
 
-        <P>Vamos a necesitar un proyecto de laravel.</P>
+        <div className='pb-12'>
+          <H2 text='Actulizar el .env' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`DB_DATABASE=recetas
+DB_USERNAME=root
+DB_PASSWORD=root@2410`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Crear la base de datos' />
+          <P>Ya sea con el PhpMyAdmin, Sequel Pro etc...</P>
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Ejecutar la migración' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`php artisan migrate`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Ejecutar seeders' />
+          <P>En mi caso, modifiqué el seeder para poder generar 100 users aletorios</P>
+          <P>app/database/seeders/DatabaseSeeder.php</P>
+          <DirectoryTreeView folder={pathDatabaseSeeder} />
+
+          <P>Ejecuto el seeder</P>
+
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`php artisan db:seed`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Instalar scout' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`composer require laravel/scout`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Implementar Searchable en el Modelo' />
+          <P>En mi caso, el filtrado va a ser de los users. Por lo tanto me dirijo al modelo User</P>
+          <P>Añado las siguientes líneas</P>
+
+          <CopyBlock
+            language='php'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`<?php
+
+use Laravel\\Scout\\Searchable;
+
+class User extends Authenticatable
+{
+    use Searchable;
+
+  /*
+  Cuando el user haga un filtrado, estos son los datos
+  que meilisearch va a retornar(id incluida).
+  */
+	public function toSearchableArray()
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+        ];
+    }
+}            
+`} />
+        </div>
 
         <div className='pb-12'>
           <H2 text='Instalar meilisearch' />
-          <P>Tenemos varias opciones</P>
-          <ul className='pb-6' >
-            <li className='py-1 px-2 my-2 rounded bg-slate-300 w-fit'>cURL</li>
-            <li className='py-1 px-2 my-2 rounded bg-slate-300 w-fit'>homebrew</li>
-            <li className='py-1 px-2 my-2 rounded bg-slate-300 w-fit'>docker</li>
-            <li className='py-1 px-2 my-2 rounded bg-slate-300 w-fit'>apt</li>
-            <li className='py-1 px-2 my-2 rounded bg-slate-300 w-fit'>source</li>
-            <li className='py-1 px-2 my-2 rounded bg-slate-300 w-fit'>windows</li>
-          </ul>
-          <P>Una vez instalado, accedemos a <strong>localhost:7700</strong></P>
-          <a href="https://www.meilisearch.com/docs/learn/getting_started/installation" className='rounded py-2 px-1 bg-teal-200 hover:bg-teal-300 hover:cursor-pointer'>&#x1F449;
-            Ir a cada instalación según el tipo</a>
-        </div>
-
-
-        <div className='pb-12'>
-          <H2 text='Instalar scout en el proyecto' />
+          <P>En mi caso, al tener s.o de mac, es de esta manera</P>
           <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
             language='bash'
-            showLineNumbers={false}
             theme={atomOneDark}
-            text={`composer require laravel/scout`} />
-
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
             codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            customStyle={{ marginBottom: '20px' }}
+            text={`brew update && brew install meilisearch`} />
+          <P>Os dejo este enlace para saber las diferentes formas de instalar meilisearch según el sistema operativo que tengas</P>
+          <Link text='https://www.meilisearch.com/docs/learn/getting_started/installation' href='https://www.meilisearch.com/docs/learn/getting_started/installation' />
+          <Callout text='Aún no ejecutéis el comando del #launch' />
+
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Ejecutamos Meilisearch' />
+          <P>En el caso del s.o mac se hace con el comando</P>
+          <CopyBlock
             language='bash'
-            showLineNumbers={false}
             theme={atomOneDark}
-            text={`php artisan vendor:publish --provider="Laravel\\Scout\\ScoutServiceProvider"`} />
-        </div>
-
-        <div className='pb-12'>
-          <H2 text='Añadir Searchable' />
-          <P>Esto es sobre el Modelo</P>
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
             codeBlock={true}
-            language='php'
             showLineNumbers={false}
-            theme={atomOneDark}
-            text={`
-    <?php
- 
-    namespace App\\Models;
-    
-    use Illuminate\\Database\\Eloquent\\Model;
-    use Laravel\\Scout\\Searchable;
-    
-    class Question extends Model
-    {
-        use Searchable;
-    }
-`} />
-        </div>
+            wrapLongLines={true}
+            customStyle={{ marginBottom: '20px' }}
+            text={`meilisearch`} />
 
-        <div className='pb-12'>
-          <H2 text='Instalar el driver de meilisearch' />
+          <P>Os dejo el siguiente enlace donde podéis ver las diferentes formas de ejecutarlo, ya sea que tengas Windows, Linux etc..</P>
+          <Link text='https://www.meilisearch.com/docs/learn/getting_started/installation' href='https://www.meilisearch.com/docs/learn/getting_started/installation' />
+          <P>Buscar el apartado de #launch</P>
+
+          <Callout text='Importante. Al ejecutar el meilisearch,os habrá generado una master key en la terminal' />
           <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
             language='bash'
-            showLineNumbers={false}
             theme={atomOneDark}
-            text={`composer require meilisearch/meilisearch-php http-interop/http-factory-guzzle`} />
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            customStyle={{ marginBottom: '20px' }}
+            text={`--master -key clave`} />
+
+          <P>Guardaros es clave en algún lado, más delante la utilizaremos.</P>
+          <Callout text='Por el momento no cerréis la terminal donde habéis ejecutado el comando meilisearch. Ya os avisaré cuando tengais que cerrarla' />
         </div>
 
         <div className='pb-12'>
-          <H2 text='Actualizar .env' />
-          <P>Debemos añadir estos nuevos datos a nuestro .env</P>
+          <H2 text='Instalar ScoutServiceProvider' />
+          <P>Abrimos una nueva terminal</P>
           <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
             language='bash'
-            showLineNumbers={false}
             theme={atomOneDark}
-            text={`
-    SCOUT_DRIVER=meilisearch
-    MEILISEARCH_HOST=http://127.0.0.1:7700
-
-`} />
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`php artisan vendor:publish —provider="Laravel\\Scout\\ScoutServiceProvider"`} />
         </div>
 
         <div className='pb-12'>
-          <H2 text='Añadir searchableAs al Modelo' />
-          <P>El questions de return debe ser reemplazado por el nombre de la tabla que queramos hacer el filtrado. En mi caso es sobre la tabla questions.</P>
+          <H2 text='Actualizar el .env' />
           <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
-            language='php'
-            showLineNumbers={false}
-            theme={atomOneDark}
-            text={`
-    <?php
- 
-    namespace App\\Models;
-             
-    use Illuminate\\Database\\Eloquent\\Model;
-    use Laravel\\Scout\\Searchable;
-             
-    class Question extends Model
-    {
-        use Searchable;
-             
-        /**
-        * Get the name of the index associated with the model.
-        */
-        public function searchableAs(): string
-        {
-            return 'questions_index';
-        }
-    }
-
-`} />
-          <Callout text='Si no tengo la bd, la creo y tengo que correr sus migraciones y seeders' />
-
-        </div>
-
-
-        <div className='pb-12'>
-          <H2 text='Importar el modelo' />
-          <P>Importar el modelo sobre el que trabajamos</P>
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
             language='bash'
-            showLineNumbers={false}
             theme={atomOneDark}
-            text={`php artisan scout:import "App\\Models\\Question"`} />
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`SCOUT_DRIVER=meilisearch
+
+MEILISEARCH_KEY="pegar key generada del comando melisearch"`} />
         </div>
 
         <div className='pb-12'>
-          <P>Si accedemos a localhost:7700, y hacemos F5, podrás observar que tenemos todos los
-            datos de la tabla del Modelo importados.</P>
-          <Callout text='Prueba a hacer pruebas de filtrados en el input del localhost:7700' />
+          <H2 text='Volver a ejecutar meilisearch con master key' />
+          <P>Vamos a cerrar la terminal de meilisearch. Y vamos a ejecutar:</P>
+
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`meilisearch --master-key="key generada de antes"`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Instalar meilisearch-php' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`composer requiremeilisearch/meilisearch-php`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Importar los users de la bd a meilisearch' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`php artisan scout:import "App\\Models\\User"`} />
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Acceder a meilisearch' />
+          <P>Accedo desde el navegador a la siguiente URL:</P>
+          <strong>localhost:7700</strong>
+          <P>Me preguntará por una key, tengo que pegar la key que se me había generada con el comando meilisearch</P>
+          <Callout text='Recomiendo toquetear el filtrado, como veréis filtra por los campos que tiene sentido, es decir, no filtra por la id, timestatmps etc…' />
         </div>
 
         <div className='pb-12'>
           <H2 text='Instalar livewire' />
           <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
             language='bash'
-            showLineNumbers={false}
             theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
             text={`composer require livewire/livewire`} />
         </div>
 
         <div className='pb-12'>
-          <P>Debo incluir esto en cada página que lo necesite:</P>
+          <H2 text='Incluir en cada página' />
+          <P>Debo incluir @liviewire... en cada página que utilice componentes de livewire</P>
+
           <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
-            language='php'
-            showLineNumbers={false}
+            language='html'
             theme={atomOneDark}
-            text={`
-    ..
-        @livewireStyles
-    </head>
-    <body>
-        ...
-         
-        @livewireScripts
-    </body>
-    </html>
-    `} />
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`..
+    @livewireStyles
+</head>
+<body>
+    ...
+                 
+    @livewireScripts
+</body>
+</html>
+            `} />
         </div>
 
         <div className='pb-12'>
-          <H2 text='Componente de búsqueda' />
-          <P>Procedo a crear el componente de búsqueda</P>
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
-            language='bash'
-            showLineNumbers={false}
-            theme={atomOneDark}
-            text={`php artisan make:livewire SearchQuestions`} />
+          <H2 text='Componente' />
+          <div className='pb-12'>
+            <H3 text='Crear' />
+            <CopyBlock
+              language='bash'
+              theme={atomOneDark}
+              codeBlock={true}
+              showLineNumbers={false}
+              wrapLongLines={true}
+              text={`php artisan make:livewire SearchUsers`} />
+            <P>Se han generado 2 ficheros, la clase y la vista</P>
 
-          <H3 text='Implementar el componente' />
-          <P>Implemento mi componente creado en la vista que lo necesite.</P>
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
-            language='php'
-            showLineNumbers={false}
-            theme={atomOneDark}
-            text={`@livewire('search-questions')`} />
+          </div>
 
-          <H3 text='Vista del componente' />
-          <P>Es un input donde el cliente introduze sus filtros. Esto se vincula gracias al <strong>wire:model="search"</strong> y al <strong>type="search"</strong></P>
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
-            language='php'
-            showLineNumbers={false}
-            theme={atomOneDark}
-            text={`
-    <div>
-        <input wire:model="search" type="search" placeholder="Search questions...">
-    
-        <h1>Search Results:</h1>
-    
-        <ul>
-            @foreach($questions as $questions)
-                <li>{{ $question->title }}</li>
-                <li>{{ $question->description }}</li>
-            @endforeach
-        </ul>
-    </div>
+          <div className='pb-12'>
+            <H3 text='Implementar' />
+            <P>En cada vista que vayamos a usar el componente</P>
+            <CopyBlock
+              language='html'
+              theme={atomOneDark}
+              codeBlock={true}
+              showLineNumbers={false}
+              wrapLongLines={true}
+              text={`<livewire:search-users />`} />
+          </div>
 
-`} />
+          <div className='pb-12'>
+            <H3 text='Clase' />
+            <P>Ubicada en app/Livewire</P>
+            <DirectoryTreeView folder={pathLivewireComponentClass} />
+            <CopyBlock
+              language='php'
+              theme={atomOneDark}
+              codeBlock={true}
+              showLineNumbers={false}
+              wrapLongLines={true}
+              text={`<?php
 
-          <H3 text='Clase del componente' />
-          <P>Deben <strong>coincidir</strong> el nombre del <strong>wire:model</strong> de la vista y el <strong>queryString</strong></P>
-          <CopyBlock
-            customStyle={{
-              marginTop: '25px',
-              marginBottom: '25px',
-              overflowY: 'scroll',
-              borderRadius: '15px',
-            }}
-            codeBlock={true}
-            language='php'
-            showLineNumbers={false}
-            theme={atomOneDark}
-            text={`
-    use App\\Models\\Question;
-    use Livewire\\Component;
+namespace App\\Livewire;
 
-    class SearchQuestions extends Component
+use App\\Models\\User;
+use Livewire\\Component;
+
+class SearchUsers extends Component
+{
+    public $search; // búsqueda del form
+
+    public function render()
     {
-        public $search;
-    
-        protected $queryString = ['search'];
-    
-        public function render()
-        {
-            $questions = [];
-            if($this->search){
-                // lo que se introduzca en el input de la vista, lo busca aquí
-                $questions = Question::search($this->search)->get();
-            }
+        $users = [];
 
-            return view('livewire.search-posts', compact('questions'));
+        if ($this->search) {
+            $users = User::search($this->search)->get();
+        } else {
+            $users = User::all();
         }
+
+        return view('livewire.search-users', compact('users')); // le paso users a la vista
     }
+}`} />
+          </div>
 
-`} />
+          <div className='pb-12'>
+            <H3 text='Vista' />
+            <P>Ubicada en resources/views/livewire</P>
+            <DirectoryTreeView folder={pathLivewireComponentView} />
+            <CopyBlock
+              language='bash'
+              theme={atomOneDark}
+              codeBlock={true}
+              showLineNumbers={false}
+              wrapLongLines={true}
+              text={`<div>
+    <input type="text" wire:model.live="search" placeholder="Search users...">
+    <ul>
+        @foreach ($users as $user)
+            <li>{{ $user->name }} | {{ $user->email }}</li>
+        @endforeach
+    </ul>
+</div>`} />
 
-          <P>Ahora dirígete a donde has implementado el componente y a funcionar !!</P>
+          </div>
         </div>
-
+        <P>a funcionar :)</P>
       </Article>
+      <Footer />
     </>
   )
 }
