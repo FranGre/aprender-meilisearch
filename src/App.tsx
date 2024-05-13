@@ -414,7 +414,7 @@ class SearchUsers extends Component
         </div>
 
         <div className='pb-12'>
-          <H2 text='Arranca el proyecto' />
+          <H2 text='Arrancar el proyecto' />
           <CopyBlock
             language='bash'
             theme={atomOneDark}
