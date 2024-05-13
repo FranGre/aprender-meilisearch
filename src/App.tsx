@@ -20,7 +20,7 @@ const pathDatabaseSeeder: Tree = {
         {
           name: "database", children: [
             {
-              name: "sedeers", children: [
+              name: "seeders", children: [
                 { name: "DatabaseSeeder.php" }
               ]
             }
