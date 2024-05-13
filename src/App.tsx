@@ -9,8 +9,9 @@ import H3 from './components/H3'
 import Link from './components/Link'
 import P from './components/P'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
+import Tree from './interfaces/Tree'
 
-const pathDatabaseSeeder = {
+const pathDatabaseSeeder: Tree = {
   name: "",
   children: [
     {

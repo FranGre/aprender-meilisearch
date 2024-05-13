@@ -2,8 +2,9 @@ import { DiPhp } from "react-icons/di"
 import { FaRegFolder, FaRegFolderOpen } from "react-icons/fa"
 import TreeView, { flattenTree } from "react-accessible-treeview"
 import "./styles.css"
+import Tree from "../interfaces/Tree"
 
-export default function DirectoryTreeView({ folder }) {
+export default function DirectoryTreeView({ folder }: { folder: Tree }) {
 
   const data = flattenTree(folder)
 
