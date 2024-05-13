@@ -10,6 +10,9 @@ import Link from './components/Link'
 import P from './components/P'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
 import Tree from './interfaces/Tree'
+import Image from './components/Image'
+import searchExample from '../public/search_example.gif'
+import web from '../public/web.png'
 
 const pathDatabaseSeeder: Tree = {
   name: "",
@@ -78,6 +81,13 @@ function App() {
     <>
       <H1 text='Como usar meilisearch junto con livewire' />
       <Article>
+        <div className='pb-12'>
+          <H2 text='Objetivo' />
+          <P>El objetivo de esta guía es lo que estáis viendo</P>
+          <Image src={searchExample} alt='meilisearch example' />
+          <P>Como véis es una búsqueda / filtrado a tiempo real de lo que el cliente introduce en ese input</P>
+
+        </div>
         <div className='pb-12'>
           <H2 text='Crear el proyecto' />
           <CopyBlock
@@ -293,6 +303,7 @@ MEILISEARCH_KEY="pegar key generada del comando melisearch"`} />
           <strong>localhost:7700</strong>
           <P>Me preguntará por una key, tengo que pegar la key que se me había generada con el comando meilisearch</P>
           <Callout text='Recomiendo toquetear el filtrado, como veréis filtra por los campos que tiene sentido, es decir, no filtra por la id, timestatmps etc…' />
+          <Image src={web} alt='meilisearch dashboard' />
         </div>
 
         <div className='pb-12'>
