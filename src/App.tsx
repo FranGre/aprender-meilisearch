@@ -1,5 +1,6 @@
 import './App.css'
 import Article from './components/Article'
+import DirectoryTreeView from './components/DirectoryTreeView'
 import Callout from './components/Callout'
 import Footer from './components/Footer'
 import H1 from './components/H1'
@@ -8,6 +9,69 @@ import H3 from './components/H3'
 import Link from './components/Link'
 import P from './components/P'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
+
+const pathDatabaseSeeder = {
+  name: "",
+  children: [
+    {
+      name: "app",
+      children: [
+        {
+          name: "database", children: [
+            {
+              name: "sedeers", children: [
+                { name: "DatabaseSeeder.php" }
+              ]
+            }
+          ]
+        }
+      ],
+    },
+  ],
+}
+
+const pathLivewireComponentClass = {
+  name: "",
+  children: [
+    {
+      name: "app",
+      children: [
+        {
+          name: "Livewire",
+          children: [
+            {
+              name: "SearchUsers.php",
+            }
+          ]
+        }
+      ],
+    },
+  ],
+}
+
+const pathLivewireComponentView = {
+  name: "",
+  children: [
+    {
+      name: "resources",
+      children: [
+        {
+          name: "views",
+          children: [
+            {
+              name: "livewire",
+              children: [
+                {
+                  name: "search-users.blade.php"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+    },
+  ],
+}
 
 function App() {
 
@@ -59,6 +123,7 @@ DB_PASSWORD=root@2410`} />
           <H2 text='Ejecutar seeders' />
           <P>En mi caso, modifiqué el seeder para poder generar 100 users aletorios</P>
           <P>app/database/seeders/DatabaseSeeder.php</P>
+          <DirectoryTreeView folder={pathDatabaseSeeder} />
 
           <P>Ejecuto el seeder</P>
 
@@ -247,21 +312,20 @@ MEILISEARCH_KEY="pegar key generada del comando melisearch"`} />
           <P>Debo incluir @liviewire... en cada página que utilice componentes de livewire</P>
 
           <CopyBlock
-            language='bash'
+            language='html'
             theme={atomOneDark}
             codeBlock={true}
             showLineNumbers={false}
             wrapLongLines={true}
-            text={`
-            ..
-                @livewireStyles
-            </head>
-            <body>
-                ...
+            text={`..
+    @livewireStyles
+</head>
+<body>
+    ...
                  
-                @livewireScripts
-            </body>
-            </html>
+    @livewireScripts
+</body>
+</html>
             `} />
         </div>
 
@@ -284,7 +348,7 @@ MEILISEARCH_KEY="pegar key generada del comando melisearch"`} />
             <H3 text='Implementar' />
             <P>En cada vista que vayamos a usar el componente</P>
             <CopyBlock
-              language='bash'
+              language='html'
               theme={atomOneDark}
               codeBlock={true}
               showLineNumbers={false}
@@ -294,7 +358,8 @@ MEILISEARCH_KEY="pegar key generada del comando melisearch"`} />
 
           <div className='pb-12'>
             <H3 text='Clase' />
-            <P>Ubicada en app/livewire</P>
+            <P>Ubicada en app/Livewire</P>
+            <DirectoryTreeView folder={pathLivewireComponentClass} />
             <CopyBlock
               language='php'
               theme={atomOneDark}
@@ -330,6 +395,7 @@ class SearchUsers extends Component
           <div className='pb-12'>
             <H3 text='Vista' />
             <P>Ubicada en resources/views/livewire</P>
+            <DirectoryTreeView folder={pathLivewireComponentView} />
             <CopyBlock
               language='bash'
               theme={atomOneDark}
