@@ -236,7 +236,7 @@ class User extends Authenticatable
             codeBlock={true}
             showLineNumbers={false}
             wrapLongLines={true}
-            text={`php artisan vendor:publish —provider="Laravel\\Scout\\ScoutServiceProvider"`} />
+            text={`php artisan vendor:publish --provider="Laravel\\Scout\\ScoutServiceProvider"`} />
         </div>
 
         <div className='pb-12'>
@@ -273,7 +273,7 @@ MEILISEARCH_KEY="pegar key generada del comando melisearch"`} />
             codeBlock={true}
             showLineNumbers={false}
             wrapLongLines={true}
-            text={`composer requiremeilisearch/meilisearch-php`} />
+            text={`composer require meilisearch/meilisearch-php`} />
         </div>
 
         <div className='pb-12'>
@@ -411,6 +411,17 @@ class SearchUsers extends Component
 </div>`} />
 
           </div>
+        </div>
+
+        <div className='pb-12'>
+          <H2 text='Arranca el proyecto' />
+          <CopyBlock
+            language='bash'
+            theme={atomOneDark}
+            codeBlock={true}
+            showLineNumbers={false}
+            wrapLongLines={true}
+            text={`php artisan serve`} />
         </div>
         <P>a funcionar :)</P>
       </Article>
